@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 075d6813c6254fd297264eefd3e4780b, type: 3}
+  m_Name: NetworkConfig
+  m_EditorClassIdentifier: 
+  IsLittleEndian: 1
+  MaxFrameTime: 5
+  EnableSilentReconnect: 1
+  EnableRttMonitoring: 1
+  PingInterval: 1000
+  RpcTimeout: 5000
+  ConnectionTimeout: 15000
+  ReconnectInterval: 3000
+  MaxReconnectAttempts: 5
+  MaxPacketSize: 1048576
+  EnableSeqValidation: 0
