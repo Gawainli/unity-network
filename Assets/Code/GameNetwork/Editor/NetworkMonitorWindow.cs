@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace Proxima.Runtime.Network
 {
+    /// <summary>
+    /// 网络监控窗口，用于在Unity编辑器中监视网络客户端状态和数据包日志
+    /// </summary>
     public class NetworkMonitorWindow : EditorWindow
     {
         [MenuItem("GameNetwork/Monitor")]
@@ -20,14 +23,12 @@ namespace Proxima.Runtime.Network
         private Vector2 _scrollPos;
         private int _selectedClientIndex = 0;
         private bool _autoScroll = true;
-
-        // [新增] 控制是否显示 Ping/Pong 的开关，默认关闭
-        private bool _showPingPong = false;
-
+        private bool _showPingPong = false; // 控制是否显示 Ping/Pong 包
         private FieldInfo _clientsField;
 
         private void OnEnable()
         {
+            // 通过反射获取 NetworkModule 中的 Clients 字段
             _clientsField = typeof(NetworkModule).GetField("Clients", BindingFlags.NonPublic | BindingFlags.Static);
         }
 
@@ -52,30 +53,18 @@ namespace Proxima.Runtime.Network
             if (_selectedClientIndex >= clients.Length) _selectedClientIndex = 0;
             var currentClient = clients[_selectedClientIndex];
 
-            // --- Toolbar ---
+            // 工具栏：客户端切换、显示控制选项、日志清除按钮
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
-
-            // Client Tabs
             _selectedClientIndex = GUILayout.Toolbar(_selectedClientIndex, clientNames, EditorStyles.toolbarButton);
-
             GUILayout.FlexibleSpace();
-
-            // [新增] Show Ping Toggle
             _showPingPong = GUILayout.Toggle(_showPingPong, "Show Ping", EditorStyles.toolbarButton);
-
-            // Auto Scroll Toggle
             _autoScroll = GUILayout.Toggle(_autoScroll, "Auto Scroll", EditorStyles.toolbarButton);
 
-            // Clear Logs Button
             if (GUILayout.Button("Clear Logs", EditorStyles.toolbarButton))
             {
-                while (currentClient.DebugLogs.TryDequeue(out _))
-                {
-                }
+                while (currentClient.DebugLogs.TryDequeue(out _)) { }
             }
-
             GUILayout.EndHorizontal();
-            // ----------------
 
             DrawClientStatus(currentClient);
             DrawLogs(currentClient);
@@ -125,7 +114,7 @@ namespace Proxima.Runtime.Network
 
             foreach (var log in client.DebugLogs)
             {
-                // [新增] 过滤逻辑：如果开关关闭 且 ID 是 1001 或 1002，则跳过不显示
+                // 根据设置过滤 Ping/Pong 包 (ID 1001/1002)
                 if (!_showPingPong && (log.Id == 1001 || log.Id == 1002))
                 {
                     continue;
